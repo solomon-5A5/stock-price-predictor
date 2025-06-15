@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Stock Price Predictor</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #e0f2ff, #cce0ff, #f4faff);
+      background-size: 600% 600%;
+      animation: gradientShift 15s ease infinite;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 650px;
+      margin-top: 5rem;
+    }
+
+    .logo {
+      height: 50px;
+      vertical-align: middle;
+      margin-right: 10px;
+    }
+
+    .prediction-result {
+      font-size: 1.8rem;
+      color: #007bff;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      0% { opacity: 0; transform: scale(0.95); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+
+    #spinner {
+      display: none;
+    }
+
+    .plotly-chart {
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container text-center">
+    <h2 class="mb-4">📈 Stock Price Predictor</h2>
+    <form action="/predict" method="POST" onsubmit="showSpinner()">
+      <div class="mb-3">
+        <select name="symbol" class="form-select form-select-lg" required>
+          <option disabled selected value="">Select a stock</option>
+          <option value="AAPL">Apple Inc. (AAPL)</option>
+          <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
+          <option value="MSFT">Microsoft Corp. (MSFT)</option>
+          <option value="TSLA">Tesla Inc. (TSLA)</option>
+          <option value="AMZN">Amazon.com Inc. (AMZN)</option>
+          <option value="XOM">Exxon Mobil Corp. (XOM)</option>
+          <option value="META">Meta Platforms Inc. (META)</option>
+        </select>
+      </div>
+      <button class="btn btn-primary btn-lg" type="submit">Predict Price</button>
+    </form>
+
+    <div id="spinner" class="mt-4">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p>Generating prediction...</p>
+    </div>
+
+    {% if symbol %}
+      <div class="mt-5">
+        <h4>
+          <img class="logo" src="https://logo.clearbit.com/{{ symbol.lower() }}.com" alt="{{symbol}} Logo"
+               onerror="this.style.display='none'">
+          {{ symbol }} Prediction
+        </h4>
+        <p class="prediction-result">Predicted Next Closing Price: <strong>${{ prediction }}</strong></p>
+
+        {% if plot_html %}
+          <div class="plotly-chart">
+            {{ plot_html | safe }}
+          </div>
+        {% endif %}
+      </div>
+    {% endif %}
+  </div>
+
+  <script>
+    function showSpinner() {
+      document.getElementById('spinner').style.display = 'block';
+    }
+  </script>
+</body>
+</html>
