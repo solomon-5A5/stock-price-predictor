@@ -1,0 +1,39 @@
+# Byte-compiled / cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pkl
+
+# Virtual environment
+venv/
+env/
+ENV/
+.venv/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/editor folders
+.vscode/
+.idea/
+
+# Model and scaler files
+*.h5
+*.hdf5
+*.pb
+
+# Logs and runtime
+*.log
+*.tmp
+
+# Flask instance folder
+instance/
+
+# Output files and notebooks
+*.ipynb_checkpoints
+*.sqlite3
+
+# dotenv
+.env
