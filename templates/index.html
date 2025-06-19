@@ -19,7 +19,7 @@
     }
 
     .container {
-      max-width: 650px;
+      max-width: 700px;
       margin-top: 5rem;
     }
 
@@ -47,23 +47,30 @@
     .plotly-chart {
       margin-top: 30px;
     }
+
+    .metrics {
+      font-size: 1rem;
+      color: #333;
+    }
   </style>
+  <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelector('form').setAttribute('target', '_self');
+  });
+</script>
+
 </head>
 <body>
   <div class="container text-center">
     <h2 class="mb-4">📈 Stock Price Predictor</h2>
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
     <form action="/predict" method="POST" onsubmit="showSpinner()">
       <div class="mb-3">
-        <select name="symbol" class="form-select form-select-lg" required>
-          <option disabled selected value="">Select a stock</option>
-          <option value="AAPL">Apple Inc. (AAPL)</option>
-          <option value="GOOGL">Alphabet Inc. (GOOGL)</option>
-          <option value="MSFT">Microsoft Corp. (MSFT)</option>
-          <option value="TSLA">Tesla Inc. (TSLA)</option>
-          <option value="AMZN">Amazon.com Inc. (AMZN)</option>
-          <option value="XOM">Exxon Mobil Corp. (XOM)</option>
-          <option value="META">Meta Platforms Inc. (META)</option>
-        </select>
+        <input type="text" name="symbol" class="form-control form-control-lg" placeholder="Enter stock symbol (e.g. AAPL, TSLA)" required>
       </div>
       <button class="btn btn-primary btn-lg" type="submit">Predict Price</button>
     </form>
@@ -82,11 +89,35 @@
                onerror="this.style.display='none'">
           {{ symbol }} Prediction
         </h4>
+
+        {% if live_price %}
+          <p class="mt-2">📊 Live Price: <strong>${{ live_price }}</strong> (Change: {{ price_change }})</p>
+        {% endif %}
+
         <p class="prediction-result">Predicted Next Closing Price: <strong>${{ prediction }}</strong></p>
+
+        {% if rmse and mae %}
+          <div class="metrics mt-3">
+            <p>🔍 RMSE: <strong>{{ rmse }}</strong> | MAE: <strong>{{ mae }}</strong></p>
+          </div>
+        {% endif %}
 
         {% if plot_html %}
           <div class="plotly-chart">
             {{ plot_html | safe }}
+          </div>
+        {% endif %}
+
+        {% if loss_chart %}
+          <div class="plotly-chart">
+            {{ loss_chart | safe }}
+          </div>
+        {% endif %}
+
+        {% if live_chart %}
+          <div class="plotly-chart mt-4">
+            <h5>📉 Live Intraday Chart</h5>
+            {{ live_chart | safe }}
           </div>
         {% endif %}
       </div>
